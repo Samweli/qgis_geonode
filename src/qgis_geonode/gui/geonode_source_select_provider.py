@@ -68,6 +68,7 @@ class GeonodeDataSourceWidget(qgis.gui.QgsAbstractDataSourceWidget, WidgetUi):
     publication_start_dte: qgis.gui.QgsDateTimeEdit
     publication_end_dte: qgis.gui.QgsDateTimeEdit
     raster_chb: QtWidgets.QCheckBox
+    remote_chb: QtWidgets.QCheckBox
     resource_types_btngrp: QtWidgets.QButtonGroup
     reverse_order_chb: QtWidgets.QCheckBox
     save_connection_btn: QtWidgets.QPushButton
@@ -160,6 +161,7 @@ class GeonodeDataSourceWidget(qgis.gui.QgsAbstractDataSourceWidget, WidgetUi):
             self.temporal_extent_end_dte,
             self.publication_start_dte,
             self.publication_end_dte,
+            self.remote_chb,
             self.search_btn,
             self.next_btn,
             self.previous_btn,
@@ -304,13 +306,16 @@ class GeonodeDataSourceWidget(qgis.gui.QgsAbstractDataSourceWidget, WidgetUi):
         search_vector = self.vector_chb.isChecked()
         search_raster = self.raster_chb.isChecked()
         search_map = self.map_chb.isChecked()
-        if any((search_vector, search_raster, search_map)):
+        search_remote = self.remote_chb.isChecked()
+        if any((search_vector, search_raster, search_map, search_remote)):
             if search_vector:
                 resource_types.append(models.GeonodeResourceType.VECTOR_LAYER)
             if search_raster:
                 resource_types.append(models.GeonodeResourceType.RASTER_LAYER)
             if search_map:
                 resource_types.append(models.GeonodeResourceType.MAP)
+            if search_remote:
+                resource_types.append(models.GeonodeResourceType.REMOTE)
             # FIXME: Implement these as search filters
             if reset_pagination:
                 self.current_page = 1

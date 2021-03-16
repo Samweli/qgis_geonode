@@ -110,18 +110,22 @@ class GeonodeApiV2Client(BaseGeonodeClient):
                 GeonodeResourceType.VECTOR_LAYER,
                 GeonodeResourceType.RASTER_LAYER,
                 GeonodeResourceType.MAP,
+                GeonodeResourceType.REMOTE,
             ]
         else:
             types = list(layer_types)
         is_vector = GeonodeResourceType.VECTOR_LAYER in types
         is_raster = GeonodeResourceType.RASTER_LAYER in types
         is_map = GeonodeResourceType.MAP in types
+        is_remote = GeonodeResourceType.REMOTE in types
         if is_vector and is_raster:
             pass
         elif is_vector:
             query.addQueryItem("filter{storeType}", "dataStore")
         elif is_raster:
             query.addQueryItem("filter{storeType}", "coverageStore")
+        elif is_remote:
+            query.addQueryItem("filter{storeType}", "remoteStore")
         else:
             raise NotImplementedError
         if ordering_field is not None:
@@ -298,6 +302,17 @@ def _get_common_model_fields(
         }
     elif resource_type == GeonodeResourceType.MAP:
         service_urls = None  # FIXME: devise a way to retrieve WMS URL for maps
+
+    elif resource_type == GeonodeResourceType.REMOTE:
+        if (
+            "ows" in deserialized_resource["store"]
+            or "wms" in deserialized_resource["store"]
+        ):
+            service_urls = {
+                GeonodeService.OGC_WMS: _get_wms_uri(
+                    geonode_base_url, deserialized_resource, auth_config=auth_config
+                ),
+            }
     else:
         service_urls = None
     reported_category = deserialized_resource.get("category")
@@ -344,6 +359,7 @@ def _get_resource_type(
         result = {
             "coverageStore": models.GeonodeResourceType.RASTER_LAYER,
             "dataStore": models.GeonodeResourceType.VECTOR_LAYER,
+            "remoteStore": models.GeonodeResourceType.REMOTE,
         }.get(payload.get("storeType"))
     else:
         result = None

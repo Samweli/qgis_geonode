@@ -22,6 +22,7 @@ class GeonodeResourceType(enum.Enum):
     VECTOR_LAYER = "vector"
     RASTER_LAYER = "raster"
     MAP = "map"
+    REMOTE = "remote"
 
 
 class OrderingType(enum.Enum):

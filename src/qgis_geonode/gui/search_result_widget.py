@@ -78,6 +78,7 @@ class SearchResultWidget(QtWidgets.QWidget, WidgetUi):
                     ":/images/themes/default/mIconVector.svg"
                 ),
                 GeonodeResourceType.MAP: ":/images/themes/default/mIconRaster.svg",
+                GeonodeResourceType.REMOTE: ":/images/themes/default/mIconRaster.svg",
             }[self.brief_resource.resource_type]
             self.resource_type_icon_la.setPixmap(QtGui.QPixmap(icon_path))
         else:
@@ -307,7 +308,7 @@ class LayerLoaderTask(qgis.core.QgsTask):
             cloned_layer = self.layer.clone()
             self.layer_handler(cloned_layer)
         else:
-            message = f"Error loading layer {self.layer_uri!r}"
+            message = f"Error loading layer {self.uri!r}"
             log(message)
             self.error_handler(message)
 
