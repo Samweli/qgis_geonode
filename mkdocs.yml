@@ -13,6 +13,7 @@ nav:
   - Development: 'development.md'
   - About: 'about.md'
   - Changelog: 'changelog-base.md'
+  - QEP: 'qep.md'
   - QGIS Repo: 'repo/plugins.xml'
 
 theme:
